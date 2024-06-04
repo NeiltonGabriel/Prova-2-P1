@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+void ler();
+void direita(int porta, int bea, int andar, int contador);
+void esquerda(int porta, int bea, int andar, int contador);
+
+int main()
+{
+    ler();
+
+    return 0;
+}
+
+void ler()
+{
+    int distancia;
+
+    scanf("%d", &distancia);
+
+    if (distancia != 0)
+    {
+        direita(distancia, 0, 1, 0);
+        esquerda(-1 * distancia, 0, 1, 0);
+        ler();
+    }
+    else return;
+}
+
+void direita(int porta, int bea, int andar, int contador)
+{
+    if (bea == porta) printf("%d ", contador);
+    else
+    {
+        if ((andar % 2) != 0) //vai andar uma quantidade impar, para a direita
+        {
+            bea = bea + andar;
+            contador = contador + andar;
+            direita(porta, bea, andar + 1, contador);
+        }
+        else
+        {
+            bea = bea - andar;
+            contador = contador + andar;
+            direita(porta, bea, andar + 1, contador);
+        }
+    }
+}
+
+void esquerda(int porta, int bea, int andar, int contador)
+{
+    if (bea == porta) printf("%d\n", contador);
+    else
+    {
+        if ((andar % 2) != 0) //vai andar uma quantidade impar, para a direita
+        {
+            bea = bea + andar;
+            contador = contador + andar;
+            esquerda(porta, bea, andar + 1, contador);
+        }
+        else
+        {
+            bea = bea - andar;
+            contador = contador + andar;
+            esquerda(porta, bea, andar + 1, contador);
+        }
+    }
+}
+
+/*imprimir ambos os numeros, caso a porta esteja a direita e a esquerda, com um espaco entre os valores
+entrada == 0 acaba
+
+0, 2
+1, 2 -> andou 1
+-1, 2 -> andou 2
+2, 2 -> andou 3
+total = andou 6
+
+Caso a porta esteja a direita ela vai ter posicao positiva
+Caso a porta esteja a esquerda ela vai ter posicao negativa*/
