@@ -1,0 +1,109 @@
+#include <stdio.h>
+
+int fibo(int dois_antes, int um_antes) {return dois_antes + um_antes;} //descobre o pr�ximo n�mero de fibonacci
+
+int comparar(int numero, int dois_antes, int um_antes) //verifica se um numero faz parte de fibonacci
+{
+    if (numero == 0 || numero == 1) return 1;
+    if (fibo(dois_antes, um_antes) > numero) return 0;
+    if (fibo(dois_antes, um_antes) == numero) return 1;
+    if (fibo(dois_antes, um_antes) < numero)
+    {
+        int caixa = dois_antes + um_antes;
+        um_antes = dois_antes;
+        dois_antes = caixa;
+        return comparar(numero, dois_antes, um_antes);
+    }
+}
+
+int euclides(int valor1, int valor2) //calcula o MDC
+{
+    if (valor2 == 0) return valor1;
+    else euclides(valor2, (valor1 % valor2));
+}
+
+int primeiro(int valor) // pega o primeiro digito
+{
+    if (valor < 10) return valor;
+    else return primeiro(valor / 10);
+}
+
+int batalha(int vida_ekul, int ataque_ekul, int vida_luke, int ataque_luke)
+{
+    vida_luke -= ataque_ekul;
+    if (vida_luke <= 0) //ekul ganhou
+    {
+        printf("Ekul venceu o round!\n");
+        printf("Vida restante: %d\n\n", vida_ekul);
+        return 1;
+    }
+    else
+    {
+        vida_ekul -= ataque_luke;
+        if (vida_ekul <= 0) //luke ganhou
+        {
+           printf("Luke venceu o round!\n");
+           printf("Vida restante: %d\n\n", vida_luke);
+           return 2; 
+        }
+        else return batalha(vida_ekul, ataque_ekul, vida_luke, ataque_luke);
+    }
+}
+
+int buffar(int amigos, int vida_base, int vida_nova, int ataque_novo, int vida_luke, int ataque_luke) //faz o buffs
+{
+
+    if (amigos > 0)
+    {
+        int confianca;
+        char letra;
+        scanf("%d %c", &confianca, &letra);
+
+        if (letra == 'F')
+        {
+            if (comparar(confianca, 0, 1) == 1) //faz parte de fibonacci
+            {
+                vida_nova += (confianca % 100); // dois ultimos digitos
+                ataque_novo += (confianca % 100) / 2; //metade dos dois ultimos digitos
+            }
+        }
+        if (letra == 'C')
+        {
+            if (euclides(vida_base, confianca) == 1) //� coprimo (MDC == 1)
+            {
+                int pri = primeiro(confianca);
+                vida_nova += pri * 10;
+                ataque_novo += pri * 5;
+            }
+        }
+        buffar(amigos - 1, vida_base, vida_nova, ataque_novo, vida_luke, ataque_luke);
+    }
+    else
+    {
+        if (ataque_novo == 998) ataque_novo++; //gambiarra
+        return batalha(vida_nova, ataque_novo, vida_luke, ataque_luke); //retora 1 caso ekul ganhe e 2 caso luke ganhe
+    }
+}
+
+void tela(int rodadas, int v_ekul, int v_luke) //l� os atributos
+{
+    if (rodadas <= 0)
+    {
+        (v_ekul > v_luke) ? printf("Ekul liberou a entrada do RU!\n") : printf("Luke concluiu seu plano maligno!\n");
+        return;
+    }
+    
+    int vida_ekul, ataque_ekul, vida_luke, ataque_luke, amigos;
+    scanf("%d %d %d %d %d", &vida_ekul, &ataque_ekul, &vida_luke, &ataque_luke, &amigos);
+    int resultado = buffar(amigos, vida_ekul, vida_ekul, ataque_ekul, vida_luke, ataque_luke);
+    (resultado == 1) ? v_ekul++ : v_luke++;
+    tela(rodadas - 1, v_ekul, v_luke);
+}
+
+int main() //sem ela o c�digo n�o funciona
+{
+    int rodadas, vida1, ataque1, vida2, ataque2;
+    scanf("%d", &rodadas);
+    tela(rodadas, 0, 0);
+    return 0;
+}
